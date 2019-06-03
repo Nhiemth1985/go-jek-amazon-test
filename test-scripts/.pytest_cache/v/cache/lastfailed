@@ -1,0 +1,4 @@
+{
+  "TC_login_logout.py": true,
+  "TC_login_logout.py::TestAmazon::test_sign_in": true
+}
