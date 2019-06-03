@@ -20,14 +20,14 @@ class AmazonHomePage:
         wait = WebDriverWait(self.driver, 30)
         wait.until(expected_conditions.visibility_of(self.find_element_by_id('authportal-main-section')))
 
-    def enter_email(self, email="rehan.11.24@gmail.com"):
+    def enter_email(self, email):
         try:
             self.driver.find_element_by_id("ap_email").send_keys(email)
             return self.driver.find_element_by_id("continue").click()
         except:
             return None
 
-    def enter_password(self, password="Misys123@"):
+    def enter_password(self, password):
         try:
             return self.driver.find_element_by_id("ap_password").send_keys(password)
         except:
