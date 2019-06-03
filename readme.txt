@@ -1,3 +1,4 @@
+To do list:
 1- Place web driver inside Python37-32\Scripts folder
 2- Main project folder "go-jek-amazon-test"
 3- Page elements (using POM) to be kept inside lib.ui.amazon_home_page (This will be used only to capture page elements)
