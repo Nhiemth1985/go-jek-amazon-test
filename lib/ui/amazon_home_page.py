@@ -2,6 +2,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
 import time
 
 
@@ -12,7 +13,7 @@ class AmazonHomePage:
 
     def click_sign_in(self):
         try:
-            return self.driver.find_element_by_id("nav-link-yourAccount").click()
+            return self.driver.find_element_by_id("nav-link-accountList").click()
         except:
             return None
 
@@ -49,13 +50,7 @@ class AmazonHomePage:
         hover = ActionChains(self.driver).move_to_element(element_to_hover_over)
         hover.perform()
 
-    def hover_over_category(self):
-        element_to_hover_over = self.driver.find_element_by_id("nav-link-shopall")
-        hover = ActionChains(self.driver).move_to_element(element_to_hover_over)
-        hover.perform()
-
     def hover_over_tv_appliance_electronics(self):
-        # // span[contains(text(), 'TV, Appliances, Electronics')]
         element_to_hover_over = self.driver.find_element_by_xpath(
             "// span[contains(text(), 'TV, Appliances, Electronics')]")
         hover = ActionChains(self.driver).move_to_element(element_to_hover_over)
@@ -70,8 +65,8 @@ class AmazonHomePage:
     def select_headphone(self, n=1):
         try:
             return self.driver.find_element_by_xpath(
-                "(//div[@id='widgetContent']//button[@class='a-button-text a-text-center'][contains(text(),'Add to Cart')])[{}]".format(
-                    n)).click()
+                "(//div[@id='widgetContent']//button[@class='a-button-text a-text-center'][contains(text(),'Add to Cart')])[{}]"
+                    .format(n)).click()
         except:
             return None
 
@@ -81,8 +76,70 @@ class AmazonHomePage:
         except:
             return None
 
-    def search_item(self, item="Macbook pro"):
+    def search_item_macbook(self, item="Macbook pro"):
         try:
-            return self.driver.find_element_by_id("twotabsearchtextbox").send_keys(item, Keys.ARROW_DOWN, Keys.ARROW_DOWN, Keys.ENTER)
+            self.driver.find_element_by_id("twotabsearchtextbox").send_keys(item)
+            self.driver.find_element_by_id("twotabsearchtextbox").send_keys(Keys.ENTER)
+            return self.driver
         except:
             return None
+
+    def select_macbook(self):
+        try:
+            return self.driver.find_element_by_xpath(
+                "(//*[@class='a-size-mini a-spacing-none a-color-base s-line-clamp-2']//span[contains(text(), 'MacBook')])[2]"
+            ).click()
+        except:
+            return None
+
+    def wait_for_add_to_cart(self):
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        wait = WebDriverWait(self.driver, 30)
+        wait.until(
+            expected_conditions.presence_of_element_located(self.driver.find_element_by_id("submit.add-to-cart")))
+
+    def add_to_cart(self):
+        try:
+            return self.driver.find_element_by_id("submit.add-to-cart").click()
+        except:
+            return None
+
+    def select_item_quantity(self):
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        select = Select(self.driver.find_element_by_xpath("//div[@id='selectQuantity']//*[@id='quantity']"))
+        select.select_by_index(1)
+        time.sleep(3)
+
+    def go_to_cart(self):
+        try:
+            return self.driver.find_element_by_xpath("//*[@id='nav-cart']//*[contains(text(), 'Cart')]").click()
+        except:
+            return None
+
+    def delete_headphones_from_cart(self):
+        try:
+            return self.driver.find_element_by_xpath(
+                "(//form[@id='activeCartViewForm']//input[@value='Delete'])[last()]").click()
+        except:
+            return None
+
+    def reduce_macbook_quantity(self):
+        select = Select(self.driver.find_element_by_xpath("//form[@id='activeCartViewForm']//*[@name='quantity']"))
+        select.select_by_value("1")
+        time.sleep(3)
+
+    def proceed_to_checkout(self):
+        try:
+            self.driver.find_element_by_name('proceedToCheckout').click()
+            time.sleep(3)
+            return self.driver
+        except:
+            return None
+
+    def logout_from_amazon(self):
+        element_to_hover_over = self.driver.find_element_by_xpath(
+            "(//span[contains(text(), 'Account & Lists')])[1]")
+        hover = ActionChains(self.driver).move_to_element(element_to_hover_over)
+        hover.perform()
+        time.sleep(3)
+        return self.driver.find_element_by_xpath("//span[contains(text(),'Sign Out')]").click()
